@@ -1,5 +1,5 @@
 # 💎 v6_banner Dynamic info 
-# — Neon One-Line Pulse Banner (v1.0)
+# — Dynamic Neon Banner v1.0.0
 
 ### 🌈 Overview
 A stylish and lightweight AMXX plugin that displays a **single-line neon banner** at the top of the screen.  
