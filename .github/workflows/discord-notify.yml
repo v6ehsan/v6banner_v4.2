@@ -3,20 +3,57 @@ name: Discord Notification
 on:
   push:
     branches:
-      - main   # شاخه‌ای که میخوای دنبال کنی
+      - main
+  release:
+    types: [published]
 
 jobs:
   discord_notify:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Send message to Discord
-        uses: ilshidur/action-discord@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Send Discord Notification
+        uses: ilshidur/action-discord@0.4.0
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}  # Webhook Discord در Secrets ذخیره شود
-          message: |
-            🚀 **New Push on Repo:** `${{ github.repository }}`
-            🧑‍💻 **By:** `${{ github.actor }}`
-            📝 **Commit:** `${{ github.sha }}`
-            🔗 [View Commit](${{ github.event.head_commit.url }})
-            📅 **Date:** `${{ github.event.head_commit.timestamp }}`
+          entryPoint: main.js
+          args: |
+            ${{ toJSON(
+              contains(github.event_name, 'push') 
+              ? {
+                  content: "",
+                  embeds: [
+                    {
+                      title: "🚀 New Push on Repo: v6_banner",
+                      description: "By **${{ github.actor }}**\nCommit: [${{ github.event.head_commit.id }}](${{ github.event.head_commit.url }})",
+                      color: 5814783,
+                      fields: [
+                        {
+                          name: "📂 Files Changed",
+                          value: join(github.event.head_commit.modified, '\n') + '\n' + join(github.event.head_commit.added, '\n') + '\n' + join(github.event.head_commit.removed, '\n'),
+                          inline: false
+                        }
+                      ],
+                      footer: {
+                        text: "v6 DeVzOnE - GitHub Notification 2025"
+                      },
+                      timestamp: "${{ github.event.head_commit.timestamp }}"
+                    }
+                  ]
+                }
+              : {
+                  content: "",
+                  embeds: [
+                    {
+                      title: "🏷️ New Release Published: ${{ github.event.release.tag_name }}",
+                      description: "By **${{ github.actor }}**\nRelease: [${{ github.event.release.name }}](${{ github.event.release.html_url }})",
+                      color: 16753920,
+                      footer: {
+                        text: "v6 DeVzOnE - GitHub Release 2025"
+                      },
+                      timestamp: "${{ github.event.release.published_at }}"
+                    }
+                  ]
+                }
+            )}}
