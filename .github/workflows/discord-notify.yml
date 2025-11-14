@@ -1,0 +1,22 @@
+name: Discord Notification
+
+on:
+  push:
+    branches:
+      - main   # شاخه‌ای که میخوای دنبال کنی
+
+jobs:
+  discord_notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send message to Discord
+        uses: Ilshidur/action-discord@v2
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}  # Webhook Discord در Secrets ذخیره شود
+          message: |
+            🚀 **New Push on Repo:** `${{ github.repository }}`
+            🧑‍💻 **By:** `${{ github.actor }}`
+            📝 **Commit:** `${{ github.sha }}`
+            🔗 [View Commit](${{ github.event.head_commit.url }})
+            📅 **Date:** `${{ github.event.head_commit.timestamp }}`
