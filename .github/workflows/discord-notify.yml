@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Send message to Discord
-        uses: ilshidur/action-discord@0.4.0
+        uses: ilshidur/action-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}  # Webhook Discord در Secrets ذخیره شود
           message: |
